@@ -11,8 +11,7 @@
 <input type="hidden" id="fieldConditions_@Model.FormClientId" value='@Html.Raw(Model.FieldConditionsAsJson())' />
 <input type="hidden" id="values_@Model.FormClientId" value='@Html.Raw(Model.AllFieldsAsJson())'/>
 
-<script src="@Url.Content("~/App_Plugins/UmbracoForms/Assets/umbracoforms-dependencies.js")" type="text/javascript"></script>
-
+<script src="@Url.Content("~/App_Plugins/validate.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/App_Plugins/UmbracoForms/Assets/umbracoforms.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/App_Plugins/UmbracoForms/Assets/umbracoforms-conditions.js")" type="text/javascript"></script>
 
@@ -20,19 +19,20 @@
 
     function InitUmbracoForm(formId) {
 
-        // add form validation metadata
-        //form.setAttribute('data-validate', '');
-
         var data = {
             contourFieldValues: undefined,
             recordValues: JSON.parse(document.querySelector("#values_" + formId).value),
             fsConditions: JSON.parse(document.querySelector("#fsConditions_" + formId).value),
             fieldConditions: JSON.parse(document.querySelector("#fieldConditions_" + formId).value),
-            form: document.querySelector("#contour_form_" + formId + " form")
+            form: document.querySelector("#contour_form_" + formId + " form"),
+            customValidationMessages: {}
         };
 
+         // add form validation metadata
+        data.form.setAttribute('data-validate', '');
+
         data.CheckRules = function () {
-            console.log("CheckRules()");
+            //console.log("CheckRules()");
             umbracoForms.conditions.handle({
                 fsConditions: data.fsConditions,
                 fieldConditions: data.fieldConditions,
@@ -40,7 +40,7 @@
             });
         };
         data.PopulateRecordValues = function () {
-            console.log("PopulateRecordValues()");
+            //console.log("PopulateRecordValues()");
 
             var fieldId;
             data.contourFieldValues = new Array();
@@ -50,14 +50,39 @@
                 }
             }
         };
+
+        data.CheckIfElementRequired = function(element) {
+            if ( element.getAttribute('data-val-required')
+                 || element.getAttribute('data-val-requiredcb')
+            ) {
+                // set required attribute on element
+                element.setAttribute('required', '');
+
+                // check if has custom mandatory validation for current element
+                if (!data.customValidationMessages[element.getAttribute('id')]) {
+                    data.customValidationMessages[element.getAttribute('id')] = {};
+                }
+
+                data.customValidationMessages[element.getAttribute('id')]['messageValueMissing'] =
+                    element.getAttribute('data-val-required') || element.getAttribute('data-val-requiredcb');
+            }
+        };
+
+        data.CheckIfElementPattern = function(element) {
+            if (element.getAttribute('data-regex')) {
+                element.setAttribute('pattern', element.getAttribute('data-regex'));
+            }
+        };
+
         data.PopulateFieldValues = function () {
-            console.log("PopulateFieldValues()");
+            //console.log("PopulateFieldValues()");
 
             data.PopulateRecordValues();
 
             // selects
             var selects = document.querySelectorAll('.contourPage select');
             [].forEach.call(selects, function (select) {
+                data.CheckIfElementRequired(select);
                 var option = document.querySelector("option[value = '" + select.value + "']");
                 var text = option.textContent || option.innerText;
                 if (text && 0 < text.length) {
@@ -68,6 +93,9 @@
             // textareas
             var textareas = document.querySelectorAll('.contourPage textarea');
             [].forEach.call(textareas, function (textarea) {
+                data.CheckIfElementRequired(textarea);
+                data.CheckIfElementPattern(textarea);
+
                 if (textarea.value && 0 < textarea.value.length) {
                     data.contourFieldValues[textarea.getAttribute('id')] = textarea.value;
                 }
@@ -76,6 +104,9 @@
             // inputs
             var inputs = document.querySelectorAll('.contourPage input');
             [].forEach.call(inputs, function (input) {
+
+                data.CheckIfElementRequired(input);
+                data.CheckIfElementPattern(input);
 
                 if (input.type == "text" || input.type == "hidden") {
                     if (input.value && 0 < input.value.length) {
@@ -103,12 +134,15 @@
                     else {
                         data.contourFieldValues[input.getAttribute('name')] = input.checked.toString();
                     }
+
+                    
                 }
             });
         };
 
         data.PopulateFieldValues();
         data.CheckRules();
+        umbracoForms.validate(data.customValidationMessages);
  
         var listenOnChangeElements = document.querySelectorAll(".contourPage input, .contourPage textarea, .contourPage select");
         for (i = 0; i < listenOnChangeElements.length; i++) {

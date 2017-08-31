@@ -164,111 +164,15 @@ new function () {
         }
 
         for (fsId in fsConditions) {
-            handleCondition($("#" + fsId), fsId, fsConditions[fsId], "Fieldset");
+            var fieldSet = document.querySelector("[id='" + fsId + "']");
+            handleCondition(fieldSet, fsId, fsConditions[fsId], "Fieldset");
         }
 
         for (fieldId in fieldConditions) {
             var field = document.querySelector("[id='" + fieldId + "']");
-            console.log(field);
             var closest = closestByClass(field, 'umbraco-forms-field');
-            console.log(closest);
             handleCondition(closest, fieldId, fieldConditions[fieldId], "Field");
         }
 
     } // end of conditions.handle
 }
-
-//var umbracoForms = umbracoForms || {};
-//(function (uf) {
-
-//    conditions.handle = function (params) {
-//      
-
-//        function evaluateCondition(id, condition) {
-//            // This was once pretty. Now it needs refactoring again. :)
-
-//            var any = condition.logicType === "Any",
-//                all = condition.logicType === "All",
-//                fieldsetVisibilities = {},
-//                hasHiddenFieldset = false,
-//                success = true,
-//                rule,
-//                i;
-
-//            for (i = 0; i < condition.rules.length; i++) {
-//                rule = condition.rules[i];
-
-//                if (id === rule.field || id === rule.fieldsetId) {
-//                    throw new Error("Field or fieldset " + id + " has a condition on itself.");
-//                }
-
-//                if (fieldsetVisibilities[rule.fieldsetId] !== undefined) {
-//                    continue;
-//                }
-
-//                if (fsConditions[rule.fieldsetId]) {
-//                    fieldsetVisibilities[rule.fieldsetId] = isVisible(rule.fieldsetId, fsConditions[rule.fieldsetId]);
-//                    if (!fieldsetVisibilities[rule.fieldsetId]) {
-//                        hasHiddenFieldset = true;
-//                    }
-//                } else {
-//                    fieldsetVisibilities[rule.fieldsetId] = true;
-//                }
-//            }
-
-//            if (all && hasHiddenFieldset) {
-//                return false;
-//            }
-
-//            for (i = 0; i < condition.rules.length; i++) {
-//                rule = condition.rules[i];
-
-//                if (fieldsetVisibilities[rule.fieldsetId]) {
-//                    success = evaluateRule(condition.rules[i]);
-//                } else {
-//                    success = false;
-//                }
-
-//                if (any && success) {
-//                    break;
-//                }
-//                if (all && !success) {
-//                    break;
-//                }
-//            }
-//            return success;
-//        }
-
-//        function evaluateConditionVisibility(id, condition) {
-//            var show = condition.actionType === "Show",
-//                cachedResult = cachedResults[id],
-//                success = cachedResult === undefined
-//                    ? (cachedResults[id] = evaluateCondition(id, condition))
-//                    : cachedResult,
-//                visible = !(success ^ show);
-//            return visible;
-//        }
-
-
-//        function handleCondition(element, id, condition, type) {
-//            // console.log(type + " " + id);
-//            var shouldShow = isVisible(id, condition);
-//            if (shouldShow) {
-//                // console.log("showing " + id + "\n");
-//                element.show();
-//            } else {
-//                // console.log("hiding " + id + "\n");
-//                element.hide();
-//            }
-//        }
-
-//        for (fsId in fsConditions) {
-//            handleCondition($("#" + fsId), fsId, fsConditions[fsId], "Fieldset");
-//        }
-
-//        for (fieldId in fieldConditions) {
-//            handleCondition($("#" + fieldId).closest(".contourField"), fieldId, fieldConditions[fieldId], "Field");
-//        }
-//    }
-
-//}(umbracoForms));

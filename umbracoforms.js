@@ -1,8 +1,12 @@
 ﻿var umbracoForms = umbracoForms || {};
-new function () {
-    
-}
 
+new function () {
+    umbracoForms.validate = function(customValidationMessages) {
+        validate.init({
+            customValidationMessages: customValidationMessages
+        });
+    };
+}
 
 
 //var form = document.querySelector('.contour form');
@@ -18,7 +22,7 @@ new function () {
 
  //        $.validator.unobtrusive.adapters.addBool("requiredcb", "required");
 
- //        $.validator.addMethod('umbracoforms_selec;tonefromlist', function(value, element) {
+ //        $.validator.addMethod('umbracoforms_selectonefromlist', function(value, element) {
  //            var valid = false;
  //            $("input", $(element).closest(".checkboxlist, .radiobuttonlist")).each(function(i) {
  //                if ($(this).is(':checked')) {
