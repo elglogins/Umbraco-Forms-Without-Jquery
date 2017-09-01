@@ -1,7 +1,6 @@
 ﻿var umbracoForms = umbracoForms || {};
 
 new function () {
-    console.log("umbracoforms-conditions");
 
     var conditions = umbracoForms.conditions || {},
         operators = conditions.operators || {
@@ -44,7 +43,6 @@ new function () {
             var value = values[rule.field],
                 func = operators[rule.operator],
                 result = value !== null && func(value, rule.value);
-                // console.log(rule.field + ": " + value + " " + rule.operator + " " + rule.value + " = " + result + "\n");
             return result;
         }
 
@@ -135,32 +133,12 @@ new function () {
         }
 
         function handleCondition(element, id, condition, type) {
-            // console.log(type + " " + id);
             var shouldShow = isVisible(id, condition);
             if (shouldShow) {
-                // console.log("showing " + id + "\n");
                 element.style.display = '';
             } else {
-                // console.log("hiding " + id + "\n");
                 element.style.display = 'none';
             }
-        }
-
-        var closestByClass = function (el, clazz) {
-            // Traverse the DOM up with a while loop
-            
-            while (!el.classList.contains(clazz)) {
-                // Increment the loop to the parent node
-                el = el.parentNode;
-                if (!el) {
-                    return null;
-                }
-            }
-            // At this point, the while loop has stopped and `el` represents the element that has
-            // the class you specified in the second parameter of the function `clazz`
-
-            // Then return the matched element
-            return el;
         }
 
         for (fsId in fsConditions) {
@@ -170,7 +148,7 @@ new function () {
 
         for (fieldId in fieldConditions) {
             var field = document.querySelector("[id='" + fieldId + "']");
-            var closest = closestByClass(field, 'umbraco-forms-field');
+            var closest = window.closestByClass(field, 'umbraco-forms-field');
             handleCondition(closest, fieldId, fieldConditions[fieldId], "Field");
         }
 

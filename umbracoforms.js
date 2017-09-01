@@ -1,64 +1,33 @@
 ﻿var umbracoForms = umbracoForms || {};
 
 new function () {
-    umbracoForms.validate = function(customValidationMessages) {
+    umbracoForms.validate = function (customValidationMessages, customValidators) {
+
         validate.init({
-            customValidationMessages: customValidationMessages
+            customValidationMessages: customValidationMessages,
+            customValidators: customValidators,
+            fieldClass: 'error', // The class to apply to fields with errors
+            errorClass: 'field-validation-error', // The class to apply to error messages,
+            validationMessageElement: 'span',
+            disableSubmit: true, // If true, don't submit the form to the server (for Ajax for submission)
+            onSubmit: function(form, fields) {
+
+                // ensure that form is valid (especially 'data-val-requiredlist' elements)
+                var requiredLists = form.querySelectorAll('[data-val-requiredlist]');
+
+                var valid = true;
+                [].forEach.call(requiredLists,
+                    function (requiredList) {
+                        var listElement = document.getElementById(requiredList.getAttribute('name'));
+                        if (listElement.classList.contains('error')) {
+                            valid = false;
+                        }
+                    });
+
+                if (valid) {
+                    form.submit();
+                }
+            } // Function to run if the form successfully validates
         });
     };
 }
-
-
-//var form = document.querySelector('.contour form');
-//form.setAttribute('data-validate','');
-
-//(function ($) {
-
- //    if ($.validator != undefined) {
-
- //        $.validator.setDefaults({
- //            ignore: ":hidden"
- //        });
-
- //        $.validator.unobtrusive.adapters.addBool("requiredcb", "required");
-
- //        $.validator.addMethod('umbracoforms_selectonefromlist', function(value, element) {
- //            var valid = false;
- //            $("input", $(element).closest(".checkboxlist, .radiobuttonlist")).each(function(i) {
- //                if ($(this).is(':checked')) {
- //                    valid = true;
- //                }
- //            });
- //            return valid;
- //        });
-
- //        $.validator.unobtrusive.adapters.addBool("requiredlist", "umbracoforms_selectonefromlist");
-
- //        $.validator.addMethod('umbracoforms_regex', function(value, element) {
-
- //            var regex = $(element).attr("data-regex");
- //            var val = $(element).val();
- //            if (val.length == 0) {
- //                return true;
- //            }
- //            return val.match(regex);
- //        });
-
- //        $.validator.unobtrusive.adapters.addBool("regex", "umbracoforms_regex");
-
- //        $('.contour input[type=submit]').not('.cancel').click(function (evt) {
- //            evt.preventDefault();
- //            var self = $(this);
- //            var frm = self.closest('form');
- //            frm.validate();
- //            if (frm.valid()) {
- //                frm.submit();
- //                self.attr('disabled', 'disabled');
-
- //            }
- //        });
- //    }
- //} (jQuery));
-
-
-
