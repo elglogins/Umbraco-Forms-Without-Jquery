@@ -1,5 +1,13 @@
 ﻿var umbracoForms = umbracoForms || {};
 
+function onCaptchaStateChanged() {
+
+    var captchaElement = document.querySelector('[data-validate]').querySelector('.g-recaptcha');
+    if (grecaptcha.getResponse().length > 0 && captchaElement) {
+        validate.removeError(captchaElement);
+    }
+}
+
 new function () {
     umbracoForms.validate = function (customValidationMessages, customValidators) {
 
@@ -24,9 +32,22 @@ new function () {
                         }
                     });
 
+                // validate if captcha is valid
+                var captchaElement = form.querySelector('.g-recaptcha');
+                if (captchaElement && grecaptcha) {
+
+                    if (grecaptcha.getResponse().length === 0) {
+                        valid = false;
+                        validate.showError(captchaElement, captchaElement.getAttribute('data-val-required'));
+                    } else {
+                        validate.removeError(captchaElement);
+                    }
+                }
+
                 if (valid) {
                     form.submit();
                 }
+
             } // Function to run if the form successfully validates
         });
     };
