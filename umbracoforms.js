@@ -17,6 +17,7 @@ new function () {
             fieldClass: 'error', // The class to apply to fields with errors
             errorClass: 'field-validation-error', // The class to apply to error messages,
             validationMessageElement: 'span',
+            validateHiddenFields: false,
             disableSubmit: true, // If true, don't submit the form to the server (for Ajax for submission)
             onSubmit: function(form, fields) {
 
