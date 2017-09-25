@@ -11,9 +11,10 @@
 <input type="hidden" id="fieldConditions_@Model.FormClientId" value='@Html.Raw(Model.FieldConditionsAsJson())' />
 <input type="hidden" id="values_@Model.FormClientId" value='@Html.Raw(Model.AllFieldsAsJson())'/>
 
-<script src="@Url.Content("~/App_Plugins/validate.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/App_Plugins/UmbracoForms/Assets/umbracoforms.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/App_Plugins/UmbracoForms/Assets/umbracoforms-conditions.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/App_Plugins/UmbracoFormsCustomization/validate.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/App_Plugins/UmbracoFormsCustomization/umbracoforms.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/App_Plugins/UmbracoFormsCustomization/umbracoforms-conditions.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/App_Plugins/UmbracoFormsCustomization/umbracoforms-initializer.js")" type="text/javascript"></script>
 
 <script type="text/javascript">
         var contourDateFormat = "@Html.ConvertDateFormat()";
