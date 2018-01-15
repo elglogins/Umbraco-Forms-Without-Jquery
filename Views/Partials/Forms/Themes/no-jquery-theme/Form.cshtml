@@ -1,10 +1,10 @@
 ﻿@using Umbraco.Forms.Core
 @model Umbraco.Forms.Mvc.Models.FormViewModel
 
+@Html.Partial("~/Views/Partials/Forms/Themes/default/Form.cshtml")
+
 @if (Model.CurrentPage.Fieldsets.Any(c => c.Containers.Any(a => a.Fields.Any(f => f.FieldType.DataType == FieldDataType.DateTime))))
 {
-    @Html.Partial("~/Views/Partials/Forms/Themes/default/Form.cshtml")
-
-    //Force to load datepicker view
+     //Force to load datepicker view
     @Html.Partial("~/Views/Partials/Forms/Themes/no-jquery-theme/DatePicker.cshtml")
 }
